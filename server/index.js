@@ -23,7 +23,7 @@
 //     if (path.url === 'index') {
 
 //     }
-    
+
 //     console.log(pathData);
 //     if (req.url === '/') {
 
@@ -112,11 +112,32 @@ const myServer = http.createServer((req, res) => {
             filePath = path.join(__dirname, "staticFiles", "contact.html");
             break;
 
+        case "/services":
+            filePath = path.join(__dirname, "staticFiles", "services.html");
+            break;
+
         default:
-            res.writeHead(404, {
-                "Content-Type": "text/plain"
-            });
-            return res.end("404 - Page Not Found");
+
+        const notFoundPath = path.join(__dirname, "staticFiles", "404.html");
+
+            fs.readFile(notFoundPath, "utf-8", (err, data) => {
+
+                if (err) {
+                    res.writeHead(500, {
+                        "content-type": "text/plain"
+                    });
+
+                    return res.end("Unable to load 404 page");
+                } else {
+
+                    res.writeHead(404, {
+                        "Content-Type": "text/html"
+                    });
+
+                    res.end(data); 
+                }
+            })
+            return;
     }
 
     fs.readFile(filePath, "utf-8", (err, data) => {
